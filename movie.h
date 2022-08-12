@@ -45,9 +45,10 @@ public:
         int runningTime,
         Money fee,
         initializer_list<DiscountCondition*>& discountConditions) :
+        //vector<DiscountCondition*>& discountConditions) : 
         Movie(title, runningTime, fee) {
-        discountConditions_.reserve(10);
-        discountConditions_.assign(discountConditions.begin(), discountConditions.end());
+            discountConditions_.reserve(10);
+            discountConditions_.assign(discountConditions.begin(), discountConditions.end());
     }
 
     bool isDiscountable(const Screening& screening) const {
@@ -58,6 +59,13 @@ public:
         }
 
         return false;
+    }
+
+    void setDiscountConditions(const vector<DiscountCondition*>& discountConditions) {
+        //기본 배열 객체를 제거한다
+        discountConditions_.clear();
+        //함수의 인자로 전달된 배열을 복사하여 대입한다 
+        discountConditions_.assign(discountConditions.begin(), discountConditions.end());
     }
 
     virtual Money calculateMovieFee(const Screening& screening) const override {

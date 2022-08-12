@@ -81,12 +81,24 @@ using namespace datetime;
 			Reservation reserveHong = avatarScreeningList[0].reserve(hong, 2);
 			reserveHong.detailOutput(cout);
 
+			//할인 조건 변경 
+			avatar.setDiscountConditions(percentDiscountConditions);
+			//예약함 (할인안됨)
+			Reservation reserveHong2 = avatarScreeningList[0].reserve(hong, 2);
+			reserveHong2.detailOutput(cout);
+			//예약함 (할인됨)
+			Reservation reserveHong3 = avatarScreeningList[1].reserve(hong, 2);
+			reserveHong3.detailOutput(cout);
+
+
 			//이순신 객체 생성함 
 			Customer lee("이순신", "2");
 
 			//ReservationAgency 클래스의 정적 예매 메서드를 호출하여 예매한다
 			Reservation reserveLee= avatarScreeningList[1].reserve(lee, 2);
 			reserveLee.detailOutput(cout);
+
+
 
 		}
 		catch (const exception& e) {
