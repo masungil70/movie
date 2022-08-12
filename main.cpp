@@ -24,13 +24,13 @@ using namespace datetime;
 		initializer_list<DiscountCondition*> percentDiscountConditions = { &periodCondition3, &sequenceCondition2, &periodCondition4};
 
 		try {
-			Movie avatar{ "아바타", 120, Money{10000}, Money{800}, amountDiscountConditions };
+			AmountDiscountMovie avatar{ "아바타", 120, Money{10000}, Money{800}, amountDiscountConditions };
 
 			//10% 비율 할인 정책 
-			Movie titanic{"타이타닉", 180, Money{11000}, 0.1, percentDiscountConditions };
+			PercentDiscountMovie titanic{"타이타닉", 180, Money{11000}, 0.1, percentDiscountConditions };
 
 			//할인 정책 없음
-			Movie starWars{"스타워즈", 210, Money{10000}};
+			NoneDiscountMovie starWars{"스타워즈", 210, Money{10000}};
 
 			//아바타 상영 일시 객체 생성  
 			vector<Screening> avatarScreeningList = {

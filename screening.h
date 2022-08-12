@@ -41,7 +41,7 @@ public:
 
     Money getMovieFee() const;
 
-    Money calculationAmount(int audienceCount) const;
+    Money calculateMovieFee(int audienceCount) const;
 
     Reservation reserve(Customer customer, int audienceCount);
 

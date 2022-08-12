@@ -2,14 +2,14 @@
 
 #include "screening.h"
 
-enum class DiscountConditionType {
-    SEQUENCE,       // 순번 조건
-    PERIOD          // 기간 조건
-};
+//enum class DiscountConditionType {
+//    SEQUENCE,       // 순번 조건
+//    PERIOD          // 기간 조건
+//};
 
 class DiscountCondition {
 public:
-    virtual bool isDiscountable(const Screening& screening) const = 0;
+    virtual bool isSatisfiedBy(const Screening& screening) const = 0;
 };
 
 
@@ -20,7 +20,7 @@ public:
     SequenceDiscountCondition(int sequence) : sequence_(sequence) {
     }
 
-    virtual bool isDiscountable(const Screening& screening) const override {
+    virtual bool isSatisfiedBy(const Screening& screening) const override {
         return (sequence_ == screening.getSequence());
     }
 };
@@ -36,7 +36,7 @@ public:
         dayOfWeek_(dayOfWeek), startTime_(startTime), endTime_(endTime) {
     }
 
-    virtual bool isDiscountable(const Screening& screening) const override {
+    virtual bool isSatisfiedBy(const Screening& screening) const override {
         return (dayOfWeek_ == screening.getWhenScreened().getDayOfWeek() &&
             startTime_ <= screening.getWhenScreened().getTime() &&
             endTime_ >= screening.getWhenScreened().getTime());

@@ -14,62 +14,38 @@ enum class DiscountType {
 };
 
 class Movie {
+private:
+    string title_;   //영화제목
+    int runningTime_; //상영시간 
+    Money fee_;// 영화 관람 비용 
+    vector<DiscountCondition*> discountConditions_;
+
 public:
-    Movie(string title, int runningTime, Money fee, double discountPercent, initializer_list<DiscountCondition*>& discountConditions) :
-        Movie(DiscountType::PERCENT_DISCOUNT, title, runningTime, fee, Money::ZERO, discountPercent, discountConditions) {
+    Movie(string title,
+        int runningTime,
+        Money fee) :
+        title_(title),
+        runningTime_(runningTime),
+        fee_(fee) {
     }
 
-    Movie(string title, int runningTime, Money fee, Money discountAmount, initializer_list<DiscountCondition*>& discountConditions) :
-        Movie(DiscountType::AMOUNT_DISCOUNT, title, runningTime, fee, discountAmount, 0, discountConditions) {
+    Movie(string title,
+        int runningTime,
+        Money fee,
+        initializer_list<DiscountCondition*>& discountConditions) :
+        Movie(title, runningTime, fee) {
+        discountConditions_.reserve(10);
+        discountConditions_.assign(discountConditions.begin(), discountConditions.end());
     }
-
-    Movie(string title, int runningTime, Money fee) :
-        Movie(DiscountType::NONE_DISCOUNT, title, runningTime, fee, Money::ZERO, 0) {
-    }
-
-    //DiscountType getMovieType() const {
-    //    return movieType_;
-    //}
-
-    //void setMovieType(DiscountType movieType) {
-    //    movieType_ = movieType;
-    //}
 
     Money getFee() const {
         return fee_;
     }
 
-    //void setFee(Money fee) {
-    //    fee_ = fee;
-    //}
-
-    //const vector<DiscountCondition>& getDiscountConditions() const {
-    //    return discountConditions_;
-    //}
-
-    //void setDiscountConditions(vector<DiscountCondition> discountConditions) {
-    //    discountConditions_ = discountConditions;
-    //}
-
-    //Money getDiscountAmount() const {
-    //    return discountAmount_;
-    //}
-
-    //void setDiscountAmount(Money discountAmount) {
-    //    discountAmount_ = discountAmount;
-    //}
-
-    //double getDiscountPercent() const {
-    //    return discountPercent_;
-    //}
-
-    //void setDiscountPercent(double discountPercent) {
-    //    discountPercent_ = discountPercent;
-    //}
-
     bool isDiscountable(const Screening& screening) const {
+
         for (const auto& condition : discountConditions_) {
-            if (condition->isDiscountable(screening)) {
+            if (condition->isSatisfiedBy(screening)) {
                 return true;
             }
         }
@@ -79,57 +55,54 @@ public:
 
     Money calculationDiscountAmount(const Screening& screening) const {
         if (isDiscountable(screening)) {
-            switch (movieType_) {
-            case  DiscountType::AMOUNT_DISCOUNT:
-                return discountAmount_;
-            case DiscountType::PERCENT_DISCOUNT:
-                return fee_.times(discountPercent_);
-            case DiscountType::NONE_DISCOUNT:
-                return Money::ZERO;
-            }
+            return calculationDiscountAmountFee(screening);
         }
         return Money::ZERO;
     }
 
-    Money calculationAmount(const Screening& screening) const {
+    Money calculateMovieFee(const Screening& screening) const {
         return fee_.minus(calculationDiscountAmount(screening));
     }
 
 private:
-    Movie(DiscountType movieType, 
-        string title, 
-        int runningTime, 
-        Money fee, 
-        Money discountAmount, 
-        double discountPercent) :
-        movieType_(movieType),
-        title_(title),
-        runningTime_(runningTime),
-        fee_(fee),
-        discountAmount_(discountAmount),
-        discountPercent_(discountPercent) {
-    }
+    virtual Money calculationDiscountAmountFee(const Screening& screening) const = 0;
 
-    Movie(DiscountType movieType, 
-        string title, 
-        int runningTime, 
-        Money fee, 
-        Money discountAmount, 
-        double discountPercent,
-        initializer_list<DiscountCondition*>& discountConditions) :
-        Movie(movieType, title, runningTime, fee, discountAmount, discountPercent) {
-        discountConditions_.reserve(10);
-        discountConditions_.assign(discountConditions.begin(), discountConditions.end());
-    }
+};
 
+class AmountDiscountMovie : public Movie {
 private:
-	string title_;   //영화제목
-	int runningTime_; //상영시간 
-	Money fee_;// 영화 관람 비용 
-    vector<DiscountCondition*> discountConditions_;
+    Money discountAmount_;
+public:
+    AmountDiscountMovie(string title, int runningTime, Money fee, Money discountAmount, initializer_list<DiscountCondition*>& discountConditions) :
+        Movie(title, runningTime, fee, discountConditions), discountAmount_(discountAmount) {
+    }
 
-    DiscountType movieType_;
-    Money discountAmount_; //movieType_ == AMOUNT_DISCOUNT
-    double discountPercent_; //movieType_ == PERCENT_DISCOUNT
+    Money calculationDiscountAmountFee(const Screening& screening) const {
+        return discountAmount_;
+    }
+
+};
+
+class PercentDiscountMovie : public Movie {
+private:
+    double discountPercent_;
+public:
+    PercentDiscountMovie(string title, int runningTime, Money fee, double discountPercent, initializer_list<DiscountCondition*>& discountConditions) :
+        Movie(title, runningTime, fee, discountConditions), discountPercent_(discountPercent) {
+    }
+
+    Money calculationDiscountAmountFee(const Screening& screening) const {
+        return getFee().times(discountPercent_);
+    }
+};
+
+class NoneDiscountMovie : public Movie {
+public:
+    NoneDiscountMovie(string title, int runningTime, Money fee) :
+        Movie(title, runningTime, fee) {
+    }
+    Money calculationDiscountAmountFee(const Screening& screening) const {
+        return Money::ZERO;
+    }
 };
 
