@@ -9,19 +9,19 @@ using namespace datetime;
 #if 1
 	int main(int argc, char** argv) {
 		//상영 순번에 대한 할인 조건 객체 생성 
-		DiscountCondition sequenceCondition1{ 1 };
-		DiscountCondition sequenceCondition2{ 2 };
-		DiscountCondition sequenceCondition10{ 10 };
+		SequenceDiscountCondition sequenceCondition1{ 1 };
+		SequenceDiscountCondition sequenceCondition2{ 2 };
+		SequenceDiscountCondition sequenceCondition10{ 10 };
 
 		//기간에 대한 할인 조건 객체 생성 
-		DiscountCondition periodCondition1{ DayOfWeek::MONDAY, {10, 0}, {11, 59} };
-		DiscountCondition periodCondition2{ DayOfWeek::THURSDAY, {10, 0}, {20, 59} };
-		DiscountCondition periodCondition3{ DayOfWeek::TUESDAY, {14, 0}, {14, 59} };
-		DiscountCondition periodCondition4{ DayOfWeek::THURSDAY, {10, 0}, {13, 59} };
+		PeriodDiscountCondition periodCondition1{ DayOfWeek::MONDAY, {10, 0}, {11, 59} };
+		PeriodDiscountCondition periodCondition2{ DayOfWeek::THURSDAY, {10, 0}, {20, 59} };
+		PeriodDiscountCondition periodCondition3{ DayOfWeek::TUESDAY, {14, 0}, {14, 59} };
+		PeriodDiscountCondition periodCondition4{ DayOfWeek::THURSDAY, {10, 0}, {13, 59} };
 
 		//할인 객체 배열 생성 
-		initializer_list<DiscountCondition> amountDiscountConditions = { sequenceCondition1, sequenceCondition10, periodCondition1, periodCondition2 };
-		initializer_list<DiscountCondition> percentDiscountConditions = { periodCondition3, sequenceCondition2, periodCondition4};
+		initializer_list<DiscountCondition*> amountDiscountConditions = { &sequenceCondition1, &sequenceCondition10, &periodCondition1, &periodCondition2 };
+		initializer_list<DiscountCondition*> percentDiscountConditions = { &periodCondition3, &sequenceCondition2, &periodCondition4};
 
 		try {
 			Movie avatar{ "아바타", 120, Money{10000}, Money{800}, amountDiscountConditions };
