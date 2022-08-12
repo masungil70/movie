@@ -2,7 +2,6 @@
 #include "movie.h"
 #include "money.h"
 #include "datetime/date.h"
-#include "reservationAgency.h"
 
 using namespace std;
 using namespace datetime;
@@ -79,14 +78,14 @@ using namespace datetime;
 			Customer hong("홍길동", "1");
 
 			//ReservationAgency 클래스의 정적 예매 메서드를 호출하여 예매한다
-			Reservation reserveHong = ReservationAgency::reserve(avatarScreeningList[0], hong, 2);
+			Reservation reserveHong = avatarScreeningList[0].reserve(hong, 2);
 			reserveHong.detailOutput(cout);
 
 			//이순신 객체 생성함 
 			Customer lee("이순신", "2");
 
 			//ReservationAgency 클래스의 정적 예매 메서드를 호출하여 예매한다
-			Reservation reserveLee= ReservationAgency::reserve(avatarScreeningList[1], lee, 2);
+			Reservation reserveLee= avatarScreeningList[1].reserve(lee, 2);
 			reserveLee.detailOutput(cout);
 
 		}

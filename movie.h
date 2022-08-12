@@ -19,11 +19,11 @@ public:
         Movie(DiscountType::PERCENT_DISCOUNT, title, runningTime, fee, Money::ZERO, discountPercent, discountConditions) {
     }
 
-    Movie(string title, int runningTime, Money fee, Money discountAmount, initializer_list<DiscountCondition>& discountConditions) : 
+    Movie(string title, int runningTime, Money fee, Money discountAmount, initializer_list<DiscountCondition>& discountConditions) :
         Movie(DiscountType::AMOUNT_DISCOUNT, title, runningTime, fee, discountAmount, 0, discountConditions) {
     }
 
-    Movie(string title, int runningTime, Money fee) : 
+    Movie(string title, int runningTime, Money fee) :
         Movie(DiscountType::NONE_DISCOUNT, title, runningTime, fee, Money::ZERO, 0) {
     }
 
@@ -67,7 +67,7 @@ public:
         discountPercent_ = discountPercent;
     }
 
-    bool isDiscountable(Screening& screening) const {
+    bool isDiscountable(const Screening& screening) const {
         for (const auto& condition : discountConditions_) {
             if (condition.isDiscountable(screening)) {
                 return true;
@@ -75,6 +75,24 @@ public:
         }
 
         return false;
+    }
+
+    Money calculationDiscountAmount(const Screening& screening) const {
+        if (isDiscountable(screening)) {
+            switch (movieType_) {
+            case  DiscountType::AMOUNT_DISCOUNT:
+                return discountAmount_;
+            case DiscountType::PERCENT_DISCOUNT:
+                return fee_.times(discountPercent_);
+            case DiscountType::NONE_DISCOUNT:
+                return Money::ZERO;
+            }
+        }
+        return Money::ZERO;
+    }
+
+    Money calculationAmount(const Screening& screening) const {
+        return fee_.minus(calculationDiscountAmount(screening));
     }
 
 private:

@@ -148,14 +148,12 @@
     <ClInclude Include="money.h" />
     <ClInclude Include="movie.h" />
     <ClInclude Include="reservation.h" />
-    <ClInclude Include="ReservationAgency.h" />
     <ClInclude Include="screening.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Money.cpp" />
     <ClCompile Include="reservation.cpp" />
-    <ClCompile Include="ReservationAgency.cpp" />
     <ClCompile Include="screening.cpp" />
     <ClCompile Include="test\TestDate.cpp" />
   </ItemGroup>
